@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RallyUp — Verissimo Onboarding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #3D68F5;
+    --accent-1: #7B6BE6;
+    --accent-2: #2DD4A8;
+    --dark: #0F1923;
+    --card: #161F2C;
+    --border: rgba(255,255,255,0.08);
+    --gray: #8896A6;
+    --white: #F1F5F9;
+    --radius: 14px;
+  }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--dark); color: var(--white); min-height: 100vh; line-height: 1.6; }
+  .header { padding: 32px 24px 0; max-width: 640px; margin: 0 auto; text-align: center; }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
+  .logo-ru { width: 48px; height: 48px; background: linear-gradient(180deg, var(--primary), var(--accent-1)); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; }
+  .logo-ru svg { width: 26px; height: 26px; }
+  .logo-x { font-size: 16px; color: rgba(255,255,255,0.25); font-weight: 500; }
+  .logo-brand { width: 48px; height: 48px; background: white; border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; color: #0F1923; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+  .header h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .header p { color: var(--gray); font-size: 15px; max-width: 480px; margin: 0 auto 8px; }
+  .time-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(45,212,168,0.1); border: 1px solid rgba(45,212,168,0.25); color: #2DD4A8; font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 50px; margin-top: 12px; }
+  .progress-wrap { max-width: 640px; margin: 28px auto 0; padding: 0 24px; }
+  .progress-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent-1)); border-radius: 4px; transition: width 0.5s cubic-bezier(0.22,1,0.36,1); }
+  .progress-label { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--gray); font-weight: 500; }
+  .container { max-width: 640px; margin: 0 auto; padding: 24px 24px 120px; }
+  .section { display: none; animation: fadeIn 0.4s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); margin-bottom: 8px; }
+  .block-label { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent-2); background: rgba(45,212,168,0.08); border: 1px solid rgba(45,212,168,0.2); padding: 4px 10px; border-radius: 50px; margin-bottom: 14px; }
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; line-height: 1.35; }
+  .section-desc { font-size: 14px; color: var(--gray); margin-bottom: 28px; }
+  .question { margin-bottom: 28px; }
+  .q-label { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .q-hint { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-style: italic; }
+  textarea, input[type="text"] { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: var(--white); font-family: inherit; font-size: 15px; resize: vertical; transition: border-color 0.2s; outline: none; }
+  textarea:focus, input[type="text"]:focus { border-color: rgba(74,156,245,0.5); }
+  textarea { min-height: 88px; }
+  textarea.tall { min-height: 150px; }
+  textarea.x-tall { min-height: 220px; }
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+  .radio-row:hover { border-color: rgba(74,156,245,0.4); background: rgba(74,156,245,0.06); }
+  .radio-row.selected { background: rgba(74,156,245,0.10); border-color: var(--primary); }
+  .radio-row input[type="radio"] { margin-top: 4px; accent-color: var(--primary); }
+  .radio-row .rl { font-size: 14px; font-weight: 500; }
+  .radio-row .rl strong { font-weight: 700; }
+  .inline-text { margin-top: 10px; display: none; }
+  .inline-text.show { display: block; }
+  .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,25,35,0.92); backdrop-filter: blur(16px); border-top: 1px solid var(--border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; max-width: 640px; margin: 0 auto; z-index: 100; }
+  @media(min-width:641px) { .nav-bar { left: 50%; transform: translateX(-50%); border-radius: 20px 20px 0 0; } }
+  .btn { padding: 12px 28px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; }
+  .btn-ghost { background: transparent; color: var(--gray); }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent-1)); color: white; }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-submit { background: linear-gradient(135deg, #2DD4A8, #1DB88E); color: white; }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .welcome { text-align: center; padding: 40px 0 0; }
+  .welcome h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+  .welcome p { color: var(--gray); font-size: 16px; max-width: 470px; margin: 0 auto 32px; line-height: 1.65; }
+  .welcome-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin-bottom: 32px; }
+  .wc { padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .wc h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .wc p { font-size: 12px; color: var(--gray); margin: 0; }
+  .done { text-align: center; padding: 60px 0; }
+  .done .logo-brand { width: 64px; height: 64px; margin-bottom: 20px; border-radius: var(--radius); font-size: 26px; }
+  .done h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .done p { color: var(--gray); font-size: 16px; max-width: 420px; margin: 0 auto; line-height: 1.6; }
+  @media(max-width:480px) { .welcome-cards { grid-template-columns: 1fr; } .header h1 { font-size: 22px; } .section-title { font-size: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-row">
+    <div class="logo-ru">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+    </div>
+    <span class="logo-x">x</span>
+    <div class="logo-brand">V</div>
+  </div>
+  <h1>Onboarding Intake</h1>
+  <p>The bits your posts and profile can't tell us: your audience, your framework, and the moments still in your head.</p>
+  <div class="time-badge">About 12 minutes</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label"><span id="sectionLabel">Welcome</span><span id="progressPct">0%</span></div>
+</div>
+
+<div class="container" id="app"></div>
+
+<div class="nav-bar">
+  <button class="btn btn-ghost" id="btnBack" onclick="goBack()">Back</button>
+  <button class="btn btn-primary" id="btnNext" onclick="goNext()">Get Started</button>
+</div>
+
+<script>
+  // Session + Apps Script wiring. Replace APPS_SCRIPT_URL after deploying Code.gs (this folder).
+  var SESSION_ID = (Date.now().toString(36) + Math.random().toString(36).substr(2, 9));
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyFl6rYixoNC8C5W5Zgt5zgdsseceR-Pqq2MUFDI4am1606QKHV-X6Ta1nznxnLTF45g/exec';
+  var state = {};
+  function sendEvent(event, fields) {
+    Object.assign(state, fields || {});
+    state.event = event; state.form = 'verissimo-alex-v1'; state.session_id = SESSION_ID; state.timestamp = new Date().toISOString();
+    try { fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(state), redirect: 'follow' }); } catch (e) {}
+  }
+
+  // 9 questions across the 3-block onboarding spine
+  var sections = [
+    { id: 'welcome', label: 'Welcome', type: 'welcome', render: function () {
+      return ''
+        + '<div class="welcome">'
+        + '  <h2>Hey Alex</h2>'
+        + '  <p>Welcome aboard. Your posts and profile already gave us your voice. This fills the gaps only you can: who you want to reach, the framework in your head, and the moments worth telling. First instinct, no editing, that\'s our job.</p>'
+        + '  <div class="welcome-cards">'
+        + '    <div class="wc"><h4>11 questions</h4><p>Voice, framework, story</p></div>'
+        + '    <div class="wc"><h4>About 12 minutes</h4><p>Coffee-length</p></div>'
+        + '    <div class="wc"><h4>No wrong answers</h4><p>First instinct wins</p></div>'
+        + '    <div class="wc"><h4>Stays between us</h4><p>Only your content team sees it</p></div>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // ── Block A · Voice & Audience ──
+    { id: 'q1', label: 'Voice & Audience', type: 'question', qNum: 1, qKey: 'q1', render: function () {
+      return ''
+        + '<div class="block-label">Block A · Voice &amp; Audience</div>'
+        + '<div class="section-label">Question 1 of 11</div>'
+        + '<div class="section-title">Who do you want to reach on LinkedIn?</div>'
+        + '<div class="section-desc">Not your whole TAM. The 50-500 people whose attention would change Verissimo\'s year.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Describe them in your own words.</div>'
+        + '  <div class="q-hint">Stage, what they\'re building, what they\'re wrestling with.</div>'
+        + '  <textarea class="tall" data-key="q1" placeholder="e.g., early-stage software founders (pre-seed to A) wrestling with whether their model actually holds up, plus a handful of LPs and operators..."></textarea>'
+        + '</div>';
+    }},
+    { id: 'q2', label: 'Voice & Audience', type: 'question', qNum: 2, qKey: 'q2', render: function () {
+      return ''
+        + '<div class="block-label">Block A · Voice &amp; Audience</div>'
+        + '<div class="section-label">Question 2 of 11</div>'
+        + '<div class="section-title">How do you want them to see <em>you</em>?</div>'
+        + '<div class="section-desc">Pick the framing that should win when someone describes you to a peer. Drawn from your voice and your career stack.</div>'
+        + '<div class="question">'
+        + '  <div class="radio-group" data-key="q2">'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="The Analytical Contrarian"><span class="rl"><strong>The Analytical Contrarian</strong> → says what the data actually shows, even when it cuts against consensus</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="The Engineer-Investor"><span class="rl"><strong>The Engineer-Investor</strong> → mechanical-engineering rigor applied to business models</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="The Operator\'s Investor"><span class="rl"><strong>The Operator\'s Investor</strong> → learned alongside the people building the companies, not just from the boardroom</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="The Plain-English Translator"><span class="rl"><strong>The Plain-English Translator</strong> → turns VC and finance jargon into clarity anyone can use</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="Other"><span class="rl"><strong>Other</strong> → write your own framing</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other"><textarea data-key="q2_other" placeholder="How do you want to be seen, in your own words?"></textarea></div>'
+        + '</div>';
+    }},
+
+    // ── Block B · The Framework + Origin ──
+    { id: 'q3', label: 'The Framework + Origin', type: 'question', qNum: 3, qKey: 'q3', render: function () {
+      return ''
+        + '<div class="block-label">Block B · The Framework + Origin</div>'
+        + '<div class="section-label">Question 3 of 11</div>'
+        + '<div class="section-title">Name your method</div>'
+        + '<div class="section-desc">You have a repeatable way of cracking a business model. You used it on SaaS a decade ago, you\'re pointing it at AI now. If we named it as a framework, what fits?</div>'
+        + '<div class="question">'
+        + '  <div class="radio-group" data-key="q3">'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="Business Model Logic"><span class="rl"><strong>Business Model Logic</strong> → your Substack name, made into the method</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="The One Column Model"><span class="rl"><strong>The One Column Model</strong> → the whole model on one column</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="First-Principles Modeling"><span class="rl"><strong>First-Principles Modeling</strong> → engineer the model from the ground up</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="I have my own name for it"><span class="rl"><strong>I have my own name for it</strong> → tell us</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="Haven\'t named it yet"><span class="rl"><strong>Haven\'t named it yet</strong> → sketch the 2-3 inputs and we\'ll help name it</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="I have my own name for it"><textarea data-key="q3_other" placeholder="What do you call it, and what are its 2-3 inputs?"></textarea></div>'
+        + '  <div class="inline-text" data-reveal-for="Haven\'t named it yet"><textarea data-key="q3_other" placeholder="What are the 2-3 inputs of the method? (we\'ll help you name it)"></textarea></div>'
+        + '</div>';
+    }},
+    { id: 'q4', label: 'The Framework + Origin', type: 'question', qNum: 4, qKey: 'q4', render: function () {
+      return ''
+        + '<div class="block-label">Block B · The Framework + Origin</div>'
+        + '<div class="section-label">Question 4 of 11</div>'
+        + '<div class="section-title">The pivot that set all this up</div>'
+        + '<div class="section-desc">The one we\'ll mine for years. Tell it the way you\'d tell a friend, not a bio.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Walk me through it.</div>'
+        + '  <div class="q-hint">Mechanical engineering at Stanford (and a CFO dad with the same degree) into finance, then into venture. Was there a specific moment it clicked? And where does the Torah-study chapter fit into how you think?</div>'
+        + '  <textarea class="x-tall" data-key="q4" placeholder="Start anywhere. Don\'t edit while writing. First pass. Get it out."></textarea>'
+        + '</div>';
+    }},
+
+    // ── Block C · Filling the Gaps ──
+    { id: 'q5', label: 'Filling the Gaps', type: 'question', qNum: 5, qKey: 'q5', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 5 of 11</div>'
+        + '<div class="section-title">Which channel should LinkedIn feed?</div>'
+        + '<div class="section-desc">Your best thinking already lives on Substack ("Business Model Logic") and the "Very True" podcast. LinkedIn can pull people toward whichever you most want to grow.</div>'
+        + '<div class="question">'
+        + '  <div class="radio-group" data-key="q5">'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Grow the Substack"><span class="rl"><strong>Grow the Substack</strong> → repurpose essays into LinkedIn posts</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Grow the podcast"><span class="rl"><strong>Grow the podcast</strong> → turn each episode into 3-5 posts</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Both, evenly"><span class="rl"><strong>Both, evenly</strong> → split the repurpose between them</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Keep LinkedIn native"><span class="rl"><strong>Keep LinkedIn native</strong> → original posts, not repurposed</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Other"><span class="rl"><strong>Other</strong> → tell us</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other"><textarea data-key="q5_other" placeholder="Where should LinkedIn drive traffic?"></textarea></div>'
+        + '</div>';
+    }},
+    { id: 'q6', label: 'Filling the Gaps', type: 'question', qNum: 6, qKey: 'q6', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 6 of 11</div>'
+        + '<div class="section-title">A bet you saw early</div>'
+        + '<div class="section-desc">You advised monday.com, Demisto, and IonQ before they were what they are now. This kind of "I saw it early" story is high-trust content.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Pick one. What did you see that others didn\'t, and what\'s the lesson you\'d generalize?</div>'
+        + '  <div class="q-hint">Past, public roles only. Nothing on the current fund, no returns, no deal terms.</div>'
+        + '  <textarea class="tall" data-key="q6" placeholder="e.g., with [company], the thing everyone missed was..."></textarea>'
+        + '</div>';
+    }},
+    { id: 'q7', label: 'Filling the Gaps', type: 'question', qNum: 7, qKey: 'q7', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 7 of 11</div>'
+        + '<div class="section-title">If we spun up one recurring series</div>'
+        + '<div class="section-desc">Off your strongest track. Which would you actually want to write every week?</div>'
+        + '<div class="question">'
+        + '  <div class="radio-group" data-key="q7">'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Model teardowns"><span class="rl"><strong>Model teardowns</strong> → pick a company, break down why it works or doesn\'t</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Plain-English definitions"><span class="rl"><strong>Plain-English definitions</strong> → the "precision vs accuracy" format</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Contrarian VC takes"><span class="rl"><strong>Contrarian VC takes</strong> → the take, with the receipts</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Founder-economics explainers"><span class="rl"><strong>Founder-economics explainers</strong> → what founders don\'t realize until it\'s too late</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Other"><span class="rl"><strong>Other</strong> → your idea</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other"><textarea data-key="q7_other" placeholder="What series would you actually want to write?"></textarea></div>'
+        + '</div>';
+    }},
+    { id: 'q8', label: 'Filling the Gaps', type: 'question', qNum: 8, qKey: 'q8', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 8 of 11</div>'
+        + '<div class="section-title">Who do you actually rate?</div>'
+        + '<div class="section-desc">Reveals who you want to be in conversation with, and surfaces guest + reaction-post angles.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Whose thinking on markets or business models do you rate right now, and who would you most want on "Very True"?</div>'
+        + '  <textarea data-key="q8" placeholder="Names + why. Doesn\'t have to be famous."></textarea>'
+        + '</div>';
+    }},
+    { id: 'q9', label: 'Filling the Gaps', type: 'question', qNum: 9, qKey: 'q9', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 9 of 11</div>'
+        + '<div class="section-title">Does the thesis still hold?</div>'
+        + '<div class="section-desc">Your graph frames Verissimo\'s edge as a contrarian SaaS / AI-margin-inversion thesis, aimed at early-stage software founders. Since Q2, has any of that shifted?</div>'
+        + '<div class="question">'
+        + '  <div class="radio-group" data-key="q9">'
+        + '    <label class="radio-row"><input type="radio" name="q9" value="Still true"><span class="rl"><strong>Still true</strong> → thesis, stage, and audience all hold</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q9" value="Changed"><span class="rl"><strong>Changed</strong> → something moved, let me describe</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q9" value="Not sure"><span class="rl"><strong>Not sure</strong> → worth talking through on a call</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Changed"><textarea data-key="q9_changed" placeholder="What shifted, the thesis, the stage, or who you\'re really trying to reach?"></textarea></div>'
+        + '</div>';
+    }},
+
+    { id: 'q10', label: 'Filling the Gaps', type: 'question', qNum: 10, qKey: 'q10', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 10 of 11</div>'
+        + '<div class="section-title">What people see, and what they don\'t</div>'
+        + '<div class="section-desc">One of our best-performing launch formats. It works because it pairs the polished wins with the reality behind them.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">On paper your path looks clean: Stanford, Morgan Stanley, NEA, your own fund. What is the part people DON\'T see behind those wins?</div>'
+        + '  <div class="q-hint">The failure, the doubt, the rejection, the grind that never makes the highlight reel. One real moment beats five vague ones.</div>'
+        + '  <textarea class="tall" data-key="q10" placeholder="What people see: ...\nWhat they don\'t: ..."></textarea>'
+        + '</div>';
+    }},
+    { id: 'q11', label: 'Filling the Gaps', type: 'question', qNum: 11, qKey: 'q11', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 11 of 11</div>'
+        + '<div class="section-title">Your journey as a timeline</div>'
+        + '<div class="section-desc">Our other go-to launch format: the year-by-year arc. The ones that land hardest have real lows, not just wins.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Map your journey as a timeline. The 4-6 moments that actually mattered, rough year plus one line each.</div>'
+        + '  <div class="q-hint">Leaps, losses, surprises, the bet nobody understood. e.g. "2012: worked the Facebook IPO. 2013: told Harry Weller I wanted the unsexy enterprise market..."</div>'
+        + '  <textarea class="x-tall" data-key="q11" placeholder="2007: ...\n2012: ...\n2013: ...\n2026: ..."></textarea>'
+        + '</div>';
+    }},
+
+    { id: 'submit', label: 'Submit', type: 'submit', render: function () {
+      return ''
+        + '<div class="section-label">Final step</div>'
+        + '<div class="section-title">Thanks for the time, Alex.</div>'
+        + '<div class="section-desc">That\'s everything we needed to kick off. Hit submit and your content team picks it up from here.</div>';
+    }},
+    { id: 'done', label: 'Done', type: 'done', render: function () {
+      return ''
+        + '<div class="done"><div class="logo-brand">V</div><h2>All set.</h2><p>Your answers landed. First drafts coming your way this week.</p></div>';
+    }}
+  ];
+
+  var current = 0, answers = {}, startedSent = false;
+  function render() {
+    var app = document.getElementById('app');
+    app.innerHTML = '<div class="section active">' + sections[current].render() + '</div>';
+    app.querySelectorAll('[data-key]').forEach(function (el) {
+      var k = el.dataset.key; if (answers[k] === undefined) return;
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') { el.value = answers[k]; }
+      else if (el.classList.contains('radio-group')) {
+        el.querySelectorAll('input[type="radio"]').forEach(function (r) { if (r.value === answers[k]) { r.checked = true; r.closest('.radio-row').classList.add('selected'); } });
+      }
+    });
+    app.querySelectorAll('.radio-group').forEach(function (group) {
+      var reveals = group.parentElement.querySelectorAll('[data-reveal-for]');
+      group.querySelectorAll('input[type="radio"]').forEach(function (r) {
+        r.addEventListener('change', function () {
+          group.querySelectorAll('.radio-row').forEach(function (row) { row.classList.remove('selected'); });
+          r.closest('.radio-row').classList.add('selected');
+          reveals.forEach(function (h) { h.classList.toggle('show', r.value === h.dataset.revealFor); });
+          saveAll();
+        });
+      });
+      var checked = group.querySelector('input[type="radio"]:checked');
+      if (checked) reveals.forEach(function (h) { if (checked.value === h.dataset.revealFor) h.classList.add('show'); });
+    });
+    app.querySelectorAll('textarea, input[type="text"]').forEach(function (el) { el.addEventListener('input', saveAll); });
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function saveAll() {
+    document.getElementById('app').querySelectorAll('[data-key]').forEach(function (el) {
+      var k = el.dataset.key;
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') { answers[k] = el.value; }
+      else if (el.classList.contains('radio-group')) { var c = el.querySelector('input[type="radio"]:checked'); answers[k] = c ? c.value : ''; }
+    });
+  }
+  function updateUI() {
+    var totalSteps = sections.length - 2, pct;
+    if (current === 0) pct = 0; else if (current >= sections.length - 1) pct = 100; else pct = Math.round((current / totalSteps) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('sectionLabel').textContent = sections[current].label;
+    var back = document.getElementById('btnBack'), next = document.getElementById('btnNext'), navBar = document.querySelector('.nav-bar');
+    next.style.display = ''; back.style.display = ''; navBar.style.display = '';
+    back.style.visibility = current === 0 ? 'hidden' : 'visible';
+    var s = sections[current];
+    if (s.type === 'welcome') { next.textContent = 'Get Started'; next.className = 'btn btn-primary'; }
+    else if (s.type === 'submit') { next.textContent = 'Submit'; next.className = 'btn btn-submit'; }
+    else if (s.type === 'done') { navBar.style.display = 'none'; }
+    else { next.textContent = 'Continue'; next.className = 'btn btn-primary'; }
+  }
+  function goNext() {
+    saveAll();
+    var s = sections[current];
+    if (s.type === 'welcome') { if (!startedSent) { sendEvent('Started', {}); startedSent = true; } }
+    else if (s.type === 'question') {
+      var payload = {};
+      Object.keys(answers).forEach(function (k) { if (k === s.qKey || k.indexOf(s.qKey + '_') === 0) payload[k] = answers[k]; });
+      sendEvent('Q' + s.qNum + ' answered', payload);
+    } else if (s.type === 'submit') { sendEvent('Submitted', {}); }
+    if (current < sections.length - 1) { current++; render(); }
+  }
+  function goBack() { saveAll(); if (current > 0) { current--; render(); } }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.metaKey) goNext(); });
+  render();
+</script>
+</body>
+</html>
